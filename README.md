@@ -13,8 +13,7 @@ A **simple yet stylish** calculator built with **HTML, CSS, and JavaScript**, de
 ---
 
 ## 📷 Preview
-![Calculator Screenshot](screenshot.png)  
-*(Replace `screenshot.png` with your actual image or GIF preview)*
+![Calculator Screenshot](Screenshot(85).png)  
 
 ---
 
