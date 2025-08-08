@@ -7,8 +7,8 @@ margin: 0;
     align-items: center;
     /* Elegant Dark Gradient */
     background: linear-gradient(135deg, #345e70, #203a43, #173d4d);
-    /* background-size: 300% 300%; */
-    /* animation: gradientShift 8s ease infinite; */
+    background-size: 300% 300%;
+    animation: gradientShift 8s ease infinite;
 }
 @keyframes gradientShift {
     0% { background-position: 0% 50%; }
