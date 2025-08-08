@@ -13,7 +13,7 @@ A **simple yet stylish** calculator built with **HTML, CSS, and JavaScript**, de
 ---
 
 ## 📷 Preview
-![Calculator Screenshot](Screenshot(86).png)  
+![Calculator Screenshot](Screenshot (86).png)  
 
 ---
 
