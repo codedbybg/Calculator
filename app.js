@@ -4,8 +4,6 @@ const buttons = document.getElementsByClassName("button");
 const main_container = document.querySelector(".container");
 const remove = document.querySelector(".remove");
 
-console.log(remove.innerText);
-
 // Click event for buttons
 for (let button of buttons) {
   button.addEventListener("click", function () {
