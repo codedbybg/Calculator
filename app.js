@@ -20,10 +20,13 @@ for (let button of buttons) {
     if (clickValue === "C") {
       inputField.value = "";
     } else if(clickValue === "%"){
-      handlePercentage();
+       if (!expr.endsWith("%") && expr.length > 0) {
+        inputField.value += "%";
+     }
     } else if (clickValue === "=") {
       try {
-        let result = eval(expr);
+        let exprToEval = convertPercentages(inputField.value);
+        let result = eval(exprToEval);
         inputField.value = result;
       } catch (error) {
         inputField.value = "Error";
@@ -36,43 +39,16 @@ for (let button of buttons) {
   });
 }
 
-function handlePercentage() {
-    let expr = inputField.value.trim();
+function convertPercentages(expr) {
+    // Handle "A%B" -> (A / 100 * B) (with or without space)
+    expr = expr.replace(/(\d+(\.\d+)?)%\s*(\d+(\.\d+)?)/g, (_, a, _2, b) => {
+        return `(${a} / 100 * ${b})`;
+    });
 
-    // Match "number operator number"
-    let match = expr.match(/(-?\d+(\.\d+)?)([+\-*/])(-?\d+(\.\d+)?)$/);
+    // Handle "A%" -> (A/100)
+    expr = expr.replace(/(\d+(\.\d+)?)%/g, (_, a) => {
+        return `(${a} / 100)`;
+    });
 
-    if (match) {
-        let firstNum = parseFloat(match[1]);
-        let operator = match[3];
-        let secondNum = parseFloat(match[4]);
-
-        let result;
-        if (operator === "+" || operator === "-") {
-            // Mobile calculator: "A + B%" = "A + (A * B / 100)"
-            result = firstNum * (secondNum / 100);
-        } else if (operator === "*" || operator === "/") {
-            // Mobile calculator: "A * B%" = "A * (B / 100)"
-            result = secondNum / 100;
-        }
-
-        inputField.value = `${firstNum}${operator}${result}`;
-    } 
-    else if (/(-?\d+(\.\d+)?)\s*%$/.test(expr)) {
-        // Case: "200%" → 2 (1% of 200)
-        let num = parseFloat(expr) || 0;
-        inputField.value = num / 100;
-    }
-    else if (/(-?\d+(\.\d+)?)\s*%\s*(-?\d+(\.\d+)?)$/.test(expr)) {
-        // Case: "200%10" → 20 (10% of 200)
-        let parts = expr.match(/(-?\d+(\.\d+)?)\s*%\s*(-?\d+(\.\d+)?)/);
-        let base = parseFloat(parts[1]);
-        let percent = parseFloat(parts[3]);
-        inputField.value = (base * percent) / 100;
-    }
-    else {
-        // Single number: convert to fraction
-        let num = parseFloat(expr) || 0;
-        inputField.value = num / 100;
-    }
+    return expr;
 }
