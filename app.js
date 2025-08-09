@@ -23,7 +23,7 @@ for (let button of buttons) {
       handlePercentage();
     } else if (clickValue === "=") {
       try {
-        let result = eval(expr.replace(/%/g, "%"));
+        let result = eval(expr);
         inputField.value = result;
       } catch (error) {
         inputField.value = "Error";
@@ -37,9 +37,9 @@ for (let button of buttons) {
 }
 
 function handlePercentage() {
-    let expr = inputField.value;
+    let expr = inputField.value.trim();
 
-    // Try matching "number operator number%"
+    // Match "number operator number"
     let match = expr.match(/(-?\d+(\.\d+)?)([+\-*/])(-?\d+(\.\d+)?)$/);
 
     if (match) {
@@ -49,18 +49,29 @@ function handlePercentage() {
 
         let result;
         if (operator === "+" || operator === "-") {
-            // % means percentage of first number
+            // Mobile calculator: "A + B%" = "A + (A * B / 100)"
             result = firstNum * (secondNum / 100);
         } else if (operator === "*" || operator === "/") {
-            // % means fraction (0.XX)
+            // Mobile calculator: "A * B%" = "A * (B / 100)"
             result = secondNum / 100;
         }
 
-        inputField.value = expr.replace(/(-?\d+(\.\d+)?)([+\-*/])(-?\d+(\.\d+)?)$/, 
-                                        `${firstNum}${operator}${result}`);
+        inputField.value = `${firstNum}${operator}${result}`;
     } 
+    else if (/(-?\d+(\.\d+)?)\s*%$/.test(expr)) {
+        // Case: "200%" → 2 (1% of 200)
+        let num = parseFloat(expr) || 0;
+        inputField.value = num / 100;
+    }
+    else if (/(-?\d+(\.\d+)?)\s*%\s*(-?\d+(\.\d+)?)$/.test(expr)) {
+        // Case: "200%10" → 20 (10% of 200)
+        let parts = expr.match(/(-?\d+(\.\d+)?)\s*%\s*(-?\d+(\.\d+)?)/);
+        let base = parseFloat(parts[1]);
+        let percent = parseFloat(parts[3]);
+        inputField.value = (base * percent) / 100;
+    }
     else {
-        // Single number case → convert to fraction
+        // Single number: convert to fraction
         let num = parseFloat(expr) || 0;
         inputField.value = num / 100;
     }
